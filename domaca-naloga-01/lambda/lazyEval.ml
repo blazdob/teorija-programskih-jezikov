@@ -99,7 +99,6 @@ let rec step = function
   | S.Apply ((S.Lambda _ | S.RecLambda _) as f, e) -> S.Apply (f, step e)
   | S.Apply (e1, e2) -> S.Apply (step e1, e2)
   (*OD TU JE NAPREJ JE MOJA KODA *)
-  | S.Nil -> S.Nil
   | S.Pair _ as v -> v
   | S.Fst (S.Pair (e1, e2)) -> e1
   | S.Fst (S.Cons (e1, e2)) -> e1
@@ -107,6 +106,7 @@ let rec step = function
   | S.Snd (S.Pair (e1, e2)) -> e2
   | S.Snd (S.Cons (e1, e2)) -> e2
   | S.Snd e -> failwith "Pricakujem par ali seznam"
+  | S.Nil -> S.Nil
   | S.Cons(e1,e2) as v -> v
   | S.Match (S.Nil, e1, x, xs, e2) -> e1
   | S.Match (S.Cons (v, vs) as e, e1, x, xs, e2) when is_value e -> (S.subst [(x, v); (xs, vs)] e2)

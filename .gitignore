@@ -4,3 +4,6 @@ _build
 *.exe
 *.cmo
 *.cmi
+domaca-naloga-01/lambda/testiranje.lam
+.vscode/tasks.json
+

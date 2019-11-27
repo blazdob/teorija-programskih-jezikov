@@ -1,0 +1,7 @@
+LET REC split sez =
+    MATCH sez WITH
+    | [] -> {[], []}
+    | x :: xs -> 
+        LET ostalo = split xs 
+        IN {FST x :: FST ostalo, SND x :: SND ostalo}
+IN split ({1, 2} :: {3, 4} :: {5, 6} :: [])
