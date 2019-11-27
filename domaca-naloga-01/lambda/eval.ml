@@ -71,7 +71,7 @@ and eval_int e =
   | S.Int n -> n
   | _ -> failwith "Integer expected"
 
-let is_value = function
+let rec is_value = function
   | S.Int _ | S.Bool _ | S.Lambda _ | S.RecLambda _ |  S.Nil -> true
   | S.Var _ | S.Plus _ | S.Minus _ | S.Times _ | S.Equal _ | S.Less _ | S.Greater _
   | S.IfThenElse _ | S.Apply _ | S.Fst _ | S.Snd _ | S.Match _ -> false
