@@ -43,16 +43,35 @@ let rec eval_exp = function
       | S.RecLambda (f, x, e) as rec_f -> eval_exp (S.subst [(f, rec_f); (x, v)] e)
       | _ -> failwith "Function expected"
       end
+  | S.Pair (e1, e2) as e -> e
+  | S.Fst (S.Pair(e1,e2)) -> eval_exp e1
+  | S.Fst (S.Cons(e1,e2)) -> eval_exp e1
+  | S.Fst e -> S.Fst (eval_exp e)
+  | S.Snd (S.Pair(e1,e2)) -> eval_exp e2
+  | S.Snd (S.Cons(e1,e2)) -> eval_exp e2
+  | S.Snd e -> S.Snd (eval_exp e)
+  | S.Nil -> S.Nil
+  | S.Cons (e1, e2) as e -> e
+  | S.Match (e, e1, x, xs, e2) ->
+    begin match e with
+      | S.Nil -> eval_exp e1
+      | S.Cons (e1, e2) -> let v1 = eval_exp e1
+                            and v2 = eval_exp e2
+                            in (S.subst [(x, v1); (xs, v2)] e2)
+      | _ -> S.Match (eval_exp e, e1, x, xs, e2)
+    end
 and eval_int e =
   match eval_exp e with
   | S.Int n -> n
   | _ -> failwith "Integer expected"
 
-let is_value = function
-  | S.Int _ | S.Bool _ | S.Lambda _ | S.RecLambda _ -> true
+let rec is_value = function
+  | S.Int _ | S.Bool _ | S.Lambda _ | S.RecLambda _ | S.Nil -> true
   | S.Var _ | S.Plus _ | S.Minus _ | S.Times _ | S.Equal _ | S.Less _ | S.Greater _
-  | S.IfThenElse _ | S.Apply _ -> false
-
+  | S.IfThenElse _ | S.Apply _ | S.Fst _ | S.Snd _ | S.Match _-> false
+	| S.Pair (v1, v2) -> (is_value v1 && is_value v2)
+  | S.Cons (v1, v2) -> (is_value v1 && is_value v2)
+  
 let rec step = function
   | S.Var _ | S.Int _ | S.Bool _ | S.Lambda _ | S.RecLambda _ -> failwith "Expected a non-terminal expression"
   | S.Plus (S.Int n1, S.Int n2) -> S.Int (n1 + n2)
@@ -79,7 +98,21 @@ let rec step = function
   | S.Apply (S.RecLambda (f, x, e) as rec_f, v) when is_value v -> S.subst [(f, rec_f); (x, v)] e
   | S.Apply ((S.Lambda _ | S.RecLambda _) as f, e) -> S.Apply (f, step e)
   | S.Apply (e1, e2) -> S.Apply (step e1, e2)
-
+  (*OD TU JE NAPREJ JE MOJA KODA *)
+  | S.Nil -> S.Nil
+  | S.Pair _ as v -> v
+  | S.Fst (S.Pair (e1, e2)) -> e1
+  | S.Fst (S.Cons (e1, e2)) -> e1
+  | S.Fst e -> failwith "Pricakujem par ali seznam"
+  | S.Snd (S.Pair (e1, e2)) -> e2
+  | S.Snd (S.Cons (e1, e2)) -> e2
+  | S.Snd e -> failwith "Pricakujem par ali seznam"
+  | S.Cons(e1,e2) as v -> v
+  | S.Match (S.Nil, e1, x, xs, e2) -> e1
+  | S.Match (S.Cons (v, vs) as e, e1, x, xs, e2) when is_value e -> (S.subst [(x, v); (xs, vs)] e2)
+  | S.Match (e, e1, x, xs, e2) when is_value e -> failwith "Pricakujem par"
+  | S.Match (e, e1, x, xs, e2) -> S.Match (step e, e1, x, xs, e2)
+  (*DO TU *)
 let big_step e =
   let v = eval_exp e in
   print_endline (S.string_of_exp v)
