@@ -43,20 +43,23 @@ let rec eval_exp = function
       | S.RecLambda (f, x, e) as rec_f -> eval_exp (S.subst [(f, rec_f); (x, v)] e)
       | _ -> failwith "Function expected"
       end
-  | S.Pair (e1, e2) -> S.Pair(eval_exp e1, eval_exp e2)
+  | S.Pair (e1, e2) -> 
+      let v1 = eval_exp e1
+      and v2 = eval_exp e2
+      in S.Pair(v1, v2)
   | S.Fst e -> 
       let v = eval_exp e
       in 
       begin match v with
-      | S.Pair(v1, v2) -> v1
-      | _ -> failwith "Pričakujem par."
+        | S.Pair(v1, v2) -> v1
+        | _ -> failwith "Pričakujem par."
       end 
   | S.Snd e -> 
       let v = eval_exp e
       in 
       begin match v with
-      | S.Pair(v1, v2) -> v2
-      | _ -> failwith "Pričakujem par."
+        | S.Pair(v1, v2) -> v2
+        | _ -> failwith "Pričakujem par."
       end 
   | S.Nil -> S.Nil
   | S.Cons (e1, e2) -> S.Cons (eval_exp e1, eval_exp e2)

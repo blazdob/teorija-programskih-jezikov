@@ -53,13 +53,13 @@ let rec eval_exp = function
   | S.Nil -> S.Nil
   | S.Cons (e1, e2) as e -> e
   | S.Match (e, e1, x, xs, e2) ->
-    begin match e with
+    let v = eval_exp e
+    in
+      begin match v with
       | S.Nil -> eval_exp e1
-      | S.Cons (e1, e2) -> let v1 = eval_exp e1
-                            and v2 = eval_exp e2
-                            in (S.subst [(x, v1); (xs, v2)] e2)
-      | _ -> S.Match (eval_exp e, e1, x, xs, e2)
-    end
+      | S.Cons (v1 ,v2) -> eval_exp (S.subst [(x, v1); (xs, v2)] e2)
+      | _ -> failwith "Pricakujem Cons ali Nil"
+      end
 and eval_int e =
   match eval_exp e with
   | S.Int n -> n
@@ -110,7 +110,7 @@ let rec step = function
   | S.Cons(e1,e2) as v -> v
   | S.Match (S.Nil, e1, x, xs, e2) -> e1
   | S.Match (S.Cons (v, vs) as e, e1, x, xs, e2) when is_value e -> (S.subst [(x, v); (xs, vs)] e2)
-  | S.Match (e, e1, x, xs, e2) when is_value e -> failwith "Pricakujem par"
+  | S.Match (e, e1, x, xs, e2) when is_value e -> failwith "Pricakujem seznam"
   | S.Match (e, e1, x, xs, e2) -> S.Match (step e, e1, x, xs, e2)
   (*DO TU *)
 let big_step e =
