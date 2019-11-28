@@ -115,16 +115,10 @@ let rec step = function
   | S.Fst (S.Pair(v1, v2)) when (is_value v1 && is_value v2) -> v1
   | S.Fst (S.Pair(v1, e2)) when is_value v1 -> S.Fst (S.Pair (v1, step e2))
   | S.Fst (S.Pair(e1, e2)) -> S.Fst (S.Pair (step e1, e2))
-  | S.Fst (S.Cons(v1, v2)) when (is_value v1 && is_value v2) -> v1
-  | S.Fst (S.Cons(v1, e2)) when is_value v1 -> S.Fst (S.Cons (v1, step e2))
-  | S.Fst (S.Cons(e1, e2)) -> S.Fst (S.Cons (step e1, e2))
   | S.Fst e -> S.Fst (step e)
   | S.Snd (S.Pair(v1, v2)) when (is_value v1 && is_value v2) -> v2
   | S.Snd (S.Pair(v1, e2)) when is_value v1 -> S.Snd (S.Pair (v1, step e2))
   | S.Snd (S.Pair(e1, e2)) -> S.Snd (S.Pair (step e1, e2))
-  | S.Snd (S.Cons(v1, v2)) when (is_value v1 && is_value v2) -> v2
-  | S.Snd (S.Cons(v1, e2)) when is_value v1 -> S.Snd (S.Cons (v1, step e2))
-  | S.Snd (S.Cons(e1, e2)) -> S.Snd (S.Cons (step e1, e2))
   | S.Snd e -> S.Snd (step e)
   | S.Cons (v1, v2) as v when (is_value v1 && is_value v2) -> v
   | S.Cons (v1, e1) when is_value v1 -> S.Cons (v1, step e1)
