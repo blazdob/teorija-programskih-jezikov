@@ -2,5 +2,6 @@ LET REC fib n =
     IF n = 0 THEN 0
     ELSE IF n = 1 THEN 1
     ELSE fib (n - 1) + fib (n - 2)
-IN
- (FUN x -> x * x * x) (fib 8)
+IN (LET i = fib 9
+    IN 2*i*i*i*i*i*i*i*i*i*i*i*i*i*i*i*i*i*i*i*i*i*i*i*i
+)
