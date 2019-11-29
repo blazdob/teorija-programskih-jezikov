@@ -1,6 +1,3 @@
-LET REC fib n =
-    IF n = 0 THEN 0
-    ELSE IF n = 1 THEN 1
-    ELSE fib (n - 1) + fib (n - 2)
+LET fact = REC fact n -> IF n = 0 THEN 1 ELSE n * fact (n - 1)
 IN
-fib 50
+FST {100, fact 100}
