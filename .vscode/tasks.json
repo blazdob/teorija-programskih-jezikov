@@ -1,0 +1,25 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "OCaml",
+        "type": "shell",
+        "command":
+         "C:\\OCaml64\\usr\\local\\bin\\ocaml-env.exe exec -- C:\\OCaml64\\home\\Blaz\\.opam\\ocaml-variants.4.08.0+mingw64c\\bin\\ocaml.exe -init \"${file}\""
+      },
+      {
+        "label": "Compile Lambda",
+        "type": "shell",
+        "command":
+         "C:\\OCaml64\\usr\\local\\bin\\ocaml-env.exe exec -- C:\\OCaml64\\home\\Blaz\\.opam\\ocaml-variants.4.08.0+mingw64c\\bin\\ocamlc.exe -g -I \"${workspaceFolder}\\domaca-naloga-02\\lambda\" -o lambda.exe \"${workspaceFolder}\\domaca-naloga-02\\lambda\\syntax.ml\" \"${workspaceFolder}\\domaca-naloga-02\\lambda\\parser.ml\" \"${workspaceFolder}\\domaca-naloga-02\\lambda\\eval.ml\" \"${workspaceFolder}\\domaca-naloga-02\\lambda\\infer.ml\" \"${workspaceFolder}\\domaca-naloga-02\\lambda\\lambda.ml\"" 
+      },
+      {
+        "label": "Lambda",
+        "type": "shell",
+        "command":
+         "C:\\OCaml64\\usr\\local\\bin\\ocaml-env.exe exec -- C:\\OCaml64\\home\\Blaz\\.opam\\ocaml-variants.4.08.0+mingw64c\\bin\\ocamlrun.exe -b \"${workspaceFolder}\\lambda.exe\" \"${file}\"" 
+      }
+    ]
+}

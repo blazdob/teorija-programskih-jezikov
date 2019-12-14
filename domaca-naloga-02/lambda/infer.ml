@@ -52,17 +52,17 @@ let rec infer_exp ctx = function
 		in
 		S.ListTy (a), []
 	| S.Fst e->
-		let a = frest_ty ()
+		let a = fresh_ty ()
 		and b = fresh_ty ()
 		and t1, eqs1 = infer_exp ctx e
 		in
-		a, [(t1, S.ArrowTy (a,b))] @ eqs1
-	| S.Snd (e1,e2)-> 
-		let a = frest_ty ()
+		a, [(t1, S.ProdTy (a,b))] @ eqs1
+	| S.Snd e-> 
+		let a = fresh_ty ()
 		and b = fresh_ty ()
 		and t1, eqs1 = infer_exp ctx e
 		in
-		b, [(t1, S.ArrowTy (a,b))] @ eqs1
+		b, [(t1, S.ProdTy (a,b))] @ eqs1
 	| S.Cons (e1,e2) ->
 		let t1, eqs1 = infer_exp ctx e1
     and t2, eqs2 = infer_exp ctx e2
@@ -104,16 +104,16 @@ let rec solve sbst = function
 	  solve sbst eqs
   | (S.ArrowTy (t1, t1'), S.ArrowTy (t2, t2')) :: eqs ->
 	  solve sbst ((t1, t2) :: (t1', t2') :: eqs)
+	| (S.ProdTy (t1, t1'), S.ProdTy (t2, t2')) :: eqs ->
+		solve sbst ((t1, t2) :: (t1', t2') :: eqs)
+	| (S.ListTy t1, S.ListTy t2) :: eqs ->
+		solve sbst ((t1, t2) :: eqs)
   | (S.ParamTy a, t) :: eqs when not (occurs a t) ->
 	  let sbst' = add_subst a t sbst in
 	  solve sbst' (subst_equations sbst' eqs)
   | (t, S.ParamTy a) :: eqs when not (occurs a t) ->
 	  let sbst' = add_subst a t sbst in
 		solve sbst' (subst_equations sbst' eqs)
-	| (S.ProdTy (t1, t1'), S.ProdTy (t2, t2')) :: eqs ->
-    solve sbst ((t1, t2) :: (t1', t2') :: eqs)
-  | (S.ListTy t1, S.ListTy t2) :: eqs ->
-    solve sbst ((t1, t2) :: eqs)
   | (t1, t2) :: _ ->
 	  failwith ("Cannot solve " ^ S.string_of_ty t1 ^ " = " ^ S.string_of_ty t2)
 

@@ -1,0 +1,3 @@
+IF ((FALSE :: []) ({0, 2}))
+THEN TRUE
+ELSE TRUE
