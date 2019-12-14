@@ -496,6 +496,33 @@ begin
             existsi (tm.if_then_else h_w H_e1 H_e2),
             exact (step.if_then_else h_h),
         }
-  },
-  repeat {sorry},
+    },
+    case of.pair {
+        cases H_ih_a empty,
+        case or.inl {
+            cases H_ih_a_1 empty,
+            case or.inl{
+                left,
+                apply value.pair,
+                assumption,
+                assumption,
+            },
+            case or.inr {
+                right,
+                cases h_1,
+                existsi (tm.pair H_e1 h_1_w),
+                apply step.pair2,
+                assumption,
+                assumption,
+            },
+        },
+        case or.inr {
+            right,
+            cases h,
+            existsi (tm.pair h_w H_e2),
+            apply step.pair1,
+            assumption,
+        },
+    },
+    repeat {sorry},
 end
