@@ -524,5 +524,106 @@ begin
             assumption,
         },
     },
+    case of.fst {
+        cases H_ih empty,
+        case or.inl {
+            cases H_a,
+            case of.pair {
+                right,
+                cases h,
+                existsi H_a_e1,
+                apply step.fst_beta,
+                apply value.pair,
+                assumption,
+                assumption,
+            },
+            repeat {cases h,},
+        },
+        case or.inr {
+            right,
+            cases h,
+            existsi (tm.fst h_w),
+            apply step.fst_step,
+            assumption,
+        },
+    },
+    case of.snd {
+        cases H_ih empty,
+        case or.inl {
+            cases H_a,
+            case of.pair {
+                right,
+                cases h,
+                existsi H_a_e2,
+                apply step.snd_beta,
+                apply value.pair,
+                assumption,
+                assumption,
+            },
+            repeat {cases h,},
+        },
+        case or.inr {
+            right,
+            cases h,
+            existsi (tm.snd h_w),
+            apply step.snd_step,
+            assumption,
+        },
+    },
+    case of.nil {
+        left,
+        apply value.nil,
+    },
+    case of.cons {
+        cases H_ih_a empty,
+        case or.inl {
+            cases H_ih_a_1 empty,
+            case or.inl {
+                left,
+                apply value.cons,
+                assumption,
+                assumption,
+            },
+            case or.inr {
+                right,
+                cases h_1,
+                existsi (tm.cons H_e h_1_w),
+                apply step.cons2,
+                repeat {assumption},
+            },
+        },
+        case or.inr {
+            right,
+            cases h,
+            existsi (tm.cons h_w H_es),
+            apply step.cons1,
+            assumption,
+        },
+    },
+    case of.list_match {
+        cases H_ih_a empty,
+        case or.inl {
+            cases H_a,
+            case of.nil {
+                right,
+                existsi H_e1,
+                apply step.list_match_nil,
+            },
+            case of.cons {
+                right,
+                cases h,
+                existsi (subst H_x H_a_e (subst H_xs H_a_es H_e2)),
+                apply step.list_match_cons,
+            },
+            repeat {cases h,},
+        },
+        case or.inr {
+            right,
+            cases h,
+            existsi (tm.list_match h_w H_e1 H_x H_xs H_e2),
+            apply step.list_match_step,
+            assumption,
+        },
+    },
     repeat {sorry},
 end
